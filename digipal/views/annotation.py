@@ -486,11 +486,18 @@ def image_annotations(request, image_id, annotations_page=True, hand=False):
         data[an['id']] = an
         an['display_order'] = 0
         if 'geo_json' in an and 'coordinates' in an['geo_json']:
-            an['display_order'] = min([
-                float(point[0])
-                for point
-                in an['geo_json']['coordinates'][0]
-            ])
+            if an['geo_json']['type'] == 'LineString':
+                an['display_order'] = min([
+                    float(point[0])
+                    for point
+                    in an['geo_json']['coordinates']
+                ])
+            else:   
+                an['display_order'] = min([
+                    float(point[0])
+                    for point
+                    in an['geo_json']['coordinates'][0]
+                ])
 
     if annotations_page:
         return HttpResponse(json.dumps(data), content_type='application/json')

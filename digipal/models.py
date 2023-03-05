@@ -3056,7 +3056,9 @@ class Annotation(models.Model):
     def get_shape_path(self, geo_json_str=None):
         ret = [[0, 0]]
         geo_json = self.get_geo_json_as_dict(geo_json_str)
-        if 'geometry' in geo_json:
+        if 'geometry' in geo_json and geo_json['geometry']['type'] == 'LineString':
+            ret = geo_json['geometry']['coordinates'][:]
+        elif 'geometry' in geo_json:
             ret = geo_json['geometry']['coordinates'][0][:]
         return ret
 
